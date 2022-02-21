@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=2]
+[gd_scene load_steps=34 format=2]
 
 [ext_resource path="res://Player.gd" type="Script" id=1]
 [ext_resource path="res://Sprites/bicho_idle.png" type="Texture" id=2]
@@ -6,6 +6,9 @@
 [ext_resource path="res://Sprites/bicho_wall.png" type="Texture" id=4]
 [ext_resource path="res://Sprites/bicho_walk.png" type="Texture" id=5]
 [ext_resource path="res://Sprites/bicho_falling.png" type="Texture" id=6]
+[ext_resource path="res://Sprites/bicho_attack1.png" type="Texture" id=7]
+[ext_resource path="res://Sprites/bicho_attack2.png" type="Texture" id=8]
+[ext_resource path="res://Sprites/bicho_attack3.png" type="Texture" id=9]
 
 [sub_resource type="AtlasTexture" id=2]
 atlas = ExtResource( 2 )
@@ -23,20 +26,64 @@ region = Rect2( 0, 0, 96, 64 )
 atlas = ExtResource( 3 )
 region = Rect2( 96, 0, 96, 64 )
 
-[sub_resource type="AtlasTexture" id=5]
-atlas = ExtResource( 5 )
-region = Rect2( 0, 0, 96, 64 )
-
-[sub_resource type="AtlasTexture" id=6]
-atlas = ExtResource( 5 )
-region = Rect2( 96, 0, 96, 64 )
-
 [sub_resource type="AtlasTexture" id=9]
 atlas = ExtResource( 4 )
 region = Rect2( 0, 0, 96, 64 )
 
 [sub_resource type="AtlasTexture" id=10]
 atlas = ExtResource( 4 )
+region = Rect2( 96, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=11]
+atlas = ExtResource( 9 )
+region = Rect2( 0, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=12]
+atlas = ExtResource( 9 )
+region = Rect2( 96, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=13]
+atlas = ExtResource( 9 )
+region = Rect2( 192, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=14]
+atlas = ExtResource( 9 )
+region = Rect2( 288, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 7 )
+region = Rect2( 96, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 7 )
+region = Rect2( 192, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 7 )
+region = Rect2( 288, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=15]
+atlas = ExtResource( 8 )
+region = Rect2( 0, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=16]
+atlas = ExtResource( 8 )
+region = Rect2( 96, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=17]
+atlas = ExtResource( 8 )
+region = Rect2( 192, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=5]
+atlas = ExtResource( 5 )
+region = Rect2( 0, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=6]
+atlas = ExtResource( 5 )
 region = Rect2( 96, 0, 96, 64 )
 
 [sub_resource type="SpriteFrames" id=4]
@@ -51,25 +98,49 @@ animations = [ {
 "name": "Jump",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 5 ), SubResource( 6 ) ],
+"frames": [ SubResource( 9 ), SubResource( 10 ) ],
 "loop": true,
-"name": "Run",
+"name": "Wall",
 "speed": 5.0
+}, {
+"frames": [ SubResource( 11 ), SubResource( 12 ), SubResource( 13 ), SubResource( 14 ) ],
+"loop": false,
+"name": "Attack3",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"loop": false,
+"name": "Attack1",
+"speed": 10.0
+}, {
+"frames": [ SubResource( 15 ), SubResource( 16 ), SubResource( 17 ) ],
+"loop": false,
+"name": "Attack2",
+"speed": 10.0
 }, {
 "frames": [ ExtResource( 6 ) ],
 "loop": true,
 "name": "Fall",
 "speed": 5.0
 }, {
-"frames": [ SubResource( 9 ), SubResource( 10 ) ],
+"frames": [ SubResource( 5 ), SubResource( 6 ) ],
 "loop": true,
-"name": "Wall",
+"name": "Run",
 "speed": 5.0
 } ]
 
 [sub_resource type="CapsuleShape2D" id=1]
 radius = 15.0
 height = 32.0
+
+[sub_resource type="RectangleShape2D" id=22]
+extents = Vector2( 6.5, 27.5 )
+
+[sub_resource type="RectangleShape2D" id=23]
+extents = Vector2( 10, 28 )
+
+[sub_resource type="RectangleShape2D" id=24]
+extents = Vector2( 10, 36 )
 
 [node name="Player" type="KinematicBody2D"]
 script = ExtResource( 1 )
@@ -79,17 +150,39 @@ wait_time = 0.1
 one_shot = true
 
 [node name="ComboTimer" type="Timer" parent="."]
-wait_time = 0.3
+wait_time = 0.5
 one_shot = true
 
 [node name="AnimatedSprite" type="AnimatedSprite" parent="."]
 frames = SubResource( 4 )
-animation = "idle"
-frame = 1
-playing = true
+animation = "Attack3"
+frame = 3
 flip_h = true
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource( 1 )
 
+[node name="Hit1" type="Area2D" parent="." groups=["attack"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit1"]
+position = Vector2( 27.5, 1.5 )
+shape = SubResource( 22 )
+disabled = true
+
+[node name="Hit2" type="Area2D" parent="." groups=["attack"]]
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit2"]
+position = Vector2( 32, 1 )
+shape = SubResource( 23 )
+disabled = true
+
+[node name="Hit3" type="Area2D" parent="." groups=["attack"]]
+visible = false
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Hit3"]
+position = Vector2( 32, 4 )
+shape = SubResource( 24 )
+disabled = true
+
 [connection signal="timeout" from="CoyoteJump" to="." method="_on_CoyoteJump_timeout"]
+[connection signal="timeout" from="ComboTimer" to="." method="_on_ComboTimer_timeout"]

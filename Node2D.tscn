@@ -1,13 +1,13 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://icon.png" type="Texture" id=1]
 [ext_resource path="res://Player.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Box.tscn" type="PackedScene" id=3]
 
 [sub_resource type="RectangleShape2D" id=1]
 extents = Vector2( 33, 34 )
 
 [node name="Node2D" type="Node2D"]
-position = Vector2( -32, 282 )
 
 [node name="TestFloor" type="Node" parent="."]
 
@@ -276,4 +276,7 @@ texture = ExtResource( 1 )
 shape = SubResource( 1 )
 
 [node name="Player" parent="." instance=ExtResource( 2 )]
-position = Vector2( 88, -134 )
+position = Vector2( 32, 166 )
+
+[node name="Box" parent="." instance=ExtResource( 3 )]
+position = Vector2( 320, 282 )

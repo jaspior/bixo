@@ -1,7 +1,7 @@
 extends KinematicBody2D
 
 
-enum states {IDLE, RUNNING, JUMP, FALLING, DASH, WALL}
+enum states {IDLE, RUNNING, JUMP, FALLING, DASH, WALL, ATTACK}
 var state = states.IDLE
 
 var gravity := 300
@@ -10,10 +10,18 @@ var max_speed := 300
 var friction = 0.5
 var velocity := Vector2.ZERO
 var canJump : bool
+var combo_counter := 0
+var push := 300
 
 
 func _ready():
 	set_animation()
+	
+func push_movables():
+	for index in get_slide_count():
+		var collision = get_slide_collision(index)
+		if collision.collider.is_in_group("movable"):
+			collision.collider.apply_central_impulse(-collision.normal * push)
 
 func _process(delta):
 	
@@ -22,18 +30,20 @@ func _process(delta):
 	jump()
 	move(delta)
 	wall()
-	velocity = move_and_slide(velocity,Vector2.UP)
+	velocity = move_and_slide(velocity,Vector2.UP,false, 4, PI/4, false)
 	set_animation()
+	push_movables()
 
 func _input(event):
 	if event.is_action_pressed("dash"):
 		dash()
+	if event.is_action_pressed("attack"):
+		attack()
 
 func set_animation():
 	match state:
 		states.IDLE:
 			$AnimatedSprite.play("idle")
-			
 		states.RUNNING:
 			$AnimatedSprite.play("Run")
 		states.FALLING:
@@ -42,29 +52,88 @@ func set_animation():
 			$AnimatedSprite.play("Jump")
 		states.WALL:
 			$AnimatedSprite.play("Wall")
+		states.ATTACK:
+			attack_animation()
 		_:
 			$AnimatedSprite.play("idle")
 			print("uer")
+
+func attack_animation():
+	match combo_counter:
+		1:
+			$AnimatedSprite.play("Attack1")
+			
+		2:
+			$AnimatedSprite.play("Attack2")
+			
+		3:
+			$AnimatedSprite.play("Attack3")
+			
+
+	
+func attack():
+	state = states.ATTACK
+	combo_counter+=1
+	combo_counter = clamp(combo_counter,0,3)
+	$ComboTimer.start()
+	
+	match combo_counter:
+		0:
+			$Hit1/CollisionShape2D.disabled = true
+			$Hit2/CollisionShape2D.disabled = true
+			$Hit3/CollisionShape2D.disabled = true
+		1:
+			$Hit1/CollisionShape2D.disabled = false
+			$Hit2/CollisionShape2D.disabled = true
+			$Hit3/CollisionShape2D.disabled = true
+		2:
+			$Hit1/CollisionShape2D.disabled = true
+			$Hit2/CollisionShape2D.disabled = false
+			$Hit3/CollisionShape2D.disabled = true
+		3:
+			$Hit1/CollisionShape2D.disabled = true
+			$Hit2/CollisionShape2D.disabled = true
+			$Hit3/CollisionShape2D.disabled = false
+			
 		
+
+	if combo_counter == 3:
+		yield($AnimatedSprite, "animation_finished")
+		combo_counter = 0
+		state = states.IDLE
+	
+
 func move(delta):
 	
 	var movement := Input.get_action_strength("right") - Input.get_action_strength("left")
 	
-	if movement != 0 and state != states.DASH:
-		velocity.x += movement*max_speed*delta
-		velocity.x = clamp(velocity.x, -speed, speed)
-		$AnimatedSprite.flip_h = movement > 0
-		if velocity.y == 0 and not is_on_wall():
-			state = states.RUNNING
-		
+	if $AnimatedSprite.flip_h:
+		$Hit1.scale.x = 1
+		$Hit2.scale.x = 1
+		$Hit3.scale.x = 1
 	else:
-		velocity.x = lerp(velocity.x, 0, friction)
-		if is_on_floor():
-			state = states.IDLE
+		$Hit1.scale.x = -1
+		$Hit2.scale.x = -1
+		$Hit3.scale.x = -1
+	
+	
+	if state != states.ATTACK:
+		if movement != 0 and state != states.DASH:
+			velocity.x += movement*max_speed*delta
+			velocity.x = clamp(velocity.x, -speed, speed)
+			$AnimatedSprite.flip_h = movement > 0
+			if velocity.y == 0 and not is_on_wall():
+				state = states.RUNNING
 		
+			
+		else:
+			velocity.x = lerp(velocity.x, 0, friction)
+			if is_on_floor():
+				state = states.IDLE
+			
 	
 func jump():
-	if Input.is_action_just_pressed("jump") and canJump:
+	if Input.is_action_just_pressed("jump") and canJump and state != states.ATTACK:
 		velocity.y -= 250
 		state = states.JUMP
 	
@@ -74,7 +143,7 @@ func apply_gravity(delta):
 		velocity.y+= gravity*delta
 
 func wall():
-	if is_on_wall():
+	if is_on_wall() and state != states.ATTACK:
 		if velocity.y > 30:
 			velocity.y = 5	
 		elif Input.is_action_just_pressed("jump"):
@@ -87,7 +156,7 @@ func wall():
 
 	
 func can_jump():
-	if velocity.y > 0:
+	if velocity.y > 0 and state != states.ATTACK:
 		state = states.FALLING
 	if is_on_floor():
 		canJump = true
@@ -111,6 +180,16 @@ func dash():
 		dashed.x = 100
 	else:
 		dashed.x = -100
-	move_and_collide(dashed)
+	move_and_collide(dashed,false)
 
+	state = states.IDLE
+
+
+
+
+func _on_ComboTimer_timeout():
+	combo_counter = 0
+	$Hit1/CollisionShape2D.disabled = true
+	$Hit2/CollisionShape2D.disabled = true
+	$Hit3/CollisionShape2D.disabled = true
 	state = states.IDLE
