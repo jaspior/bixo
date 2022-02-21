@@ -50,7 +50,7 @@ func move(delta):
 	
 	var movement := Input.get_action_strength("right") - Input.get_action_strength("left")
 	
-	if movement != 0:
+	if movement != 0 and state != states.DASH:
 		velocity.x += movement*max_speed*delta
 		velocity.x = clamp(velocity.x, -speed, speed)
 		$AnimatedSprite.flip_h = movement > 0
@@ -104,8 +104,13 @@ func hit_ceiling():
 
 func dash():
 	state = states.DASH
+	var dashed = Vector2.ZERO
+	# se aqui usar velocity, o dash é na direção do movimento, não fica egal
 	print("dash")
 	if $AnimatedSprite.flip_h:
-		velocity.x = 10000
+		dashed.x = 100
 	else:
-		velocity.x = -10000
+		dashed.x = -100
+	move_and_collide(dashed)
+
+	state = states.IDLE
