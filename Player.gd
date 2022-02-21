@@ -100,7 +100,7 @@ func _on_CoyoteJump_timeout():
 func hit_ceiling():
 	#avoid animation bug when hit ceiling
 	if is_on_ceiling():
-		position.y -= 1 
+		position.y += 1 
 
 func dash():
 	state = states.DASH
