@@ -4,15 +4,15 @@ extends KinematicBody2D
 enum states {IDLE, RUNNING, JUMP, FALLING, DASH, WALL, ATTACK}
 var state = states.IDLE
 
-var gravity := 300
-var speed := 150
-var max_speed := 300
-var friction = 0.5
+export var gravity := 700
+export var speed := 200
+export var max_speed := 350
+export var friction = 0.5
 var velocity := Vector2.ZERO
 var canJump : bool
 var combo_counter := 0
-var push := 300
-
+export var push := 300
+export var jump_speedy := 300
 
 func _ready():
 	set_animation()
@@ -131,10 +131,26 @@ func move(delta):
 			if is_on_floor():
 				state = states.IDLE
 			
+			
+####
+####  ++++ Inclusão de parâmetros para o ataque também
+#### o bixo estava deslizando de mais no meio do ataque 
+
+	else:
+		if movement != 0 and state != states.DASH:
+			velocity.x += movement*max_speed*delta
+			velocity.x = clamp(velocity.x, -speed, speed)
+			$AnimatedSprite.flip_h = movement > 0
+		else:
+			velocity.x = lerp(velocity.x, 0, friction)
 	
+###
+###
+###
+
 func jump():
 	if Input.is_action_just_pressed("jump") and canJump and state != states.ATTACK:
-		velocity.y -= 250
+		velocity.y -= jump_speedy
 		state = states.JUMP
 	
 
@@ -147,11 +163,11 @@ func wall():
 		if velocity.y > 30:
 			velocity.y = 5	
 		elif Input.is_action_just_pressed("jump"):
-			velocity.y = -200	
+			velocity.y = -300
 			if $AnimatedSprite.flip_h:
-				velocity.x = -100
+				velocity.x = -60
 			else:
-				velocity.x = 100
+				velocity.x = 60
 		state = states.WALL		
 
 	
