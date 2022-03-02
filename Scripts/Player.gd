@@ -13,6 +13,7 @@ var canJump : bool
 var combo_counter := 0
 export var push := 300
 export var jump_speedy := 500
+var jumps := 0
 
 func _ready():
 	set_animation()
@@ -150,9 +151,10 @@ func move(delta):
 
 func jump():
 	if Input.is_action_just_pressed("jump") and canJump and state != states.ATTACK:
-		velocity.y -= jump_speedy
+		#velocity.y -= jump_speedy
+		velocity.y = -jump_speedy ##desse jeito sempre pula alto, gravidade n interdere tanto
 		state = states.JUMP
-	
+		jumps+=1
 
 func apply_gravity(delta):
 	if not is_on_floor():
@@ -175,8 +177,9 @@ func can_jump():
 	if velocity.y > 0 and state != states.ATTACK:
 		state = states.FALLING
 	if is_on_floor():
+		jumps = 0
 		canJump = true
-	elif canJump and $CoyoteJump.is_stopped():
+	elif canJump and $CoyoteJump.is_stopped() and jumps >= 2:
 		$CoyoteJump.start()
 
 func _on_CoyoteJump_timeout():
