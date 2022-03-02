@@ -4,15 +4,15 @@ extends KinematicBody2D
 enum states {IDLE, RUNNING, JUMP, FALLING, DASH, WALL, ATTACK}
 var state = states.IDLE
 
-export var gravity := 700
-export var speed := 200
-export var max_speed := 350
-export var friction = 0.5
+export var gravity := 1100
+export var speed := 280
+export var max_speed := 300
+export var friction = 0.8
 var velocity := Vector2.ZERO
 var canJump : bool
 var combo_counter := 0
 export var push := 300
-export var jump_speedy := 300
+export var jump_speedy := 500
 
 func _ready():
 	set_animation()
@@ -163,7 +163,7 @@ func wall():
 		if velocity.y > 30:
 			velocity.y = 5	
 		elif Input.is_action_just_pressed("jump"):
-			velocity.y = -300
+			velocity.y = - .9 * jump_speedy
 			if $AnimatedSprite.flip_h:
 				velocity.x = -60
 			else:
