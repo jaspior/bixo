@@ -49,7 +49,7 @@ func _on_DetectPlayer_body_entered(body):
 		state = states.WAIT
 		$Timer.start()
 		player_pos = body.global_position
-		$DetectPlayer/CollisionShape2D.disabled = true		
+		$DetectPlayer.set_deferred("monitoring",false)
 
 
 func _on_Timer_timeout():
@@ -63,6 +63,6 @@ func _on_Timer_timeout():
 		$AnimatedSprite.flip_h = true
 		dir_attack*=-1
 	
-	move_and_collide(dir_attack*500)
-	$DetectPlayer/CollisionShape2D.disabled = false
+	move_and_collide(dir_attack*100)
+	$DetectPlayer.set_deferred("monitoring",true)
 	state = states.IDLE
