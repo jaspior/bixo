@@ -38,22 +38,6 @@ region = Rect2( 96, 0, 96, 64 )
 atlas = ExtResource( 8 )
 region = Rect2( 192, 0, 96, 64 )
 
-[sub_resource type="AtlasTexture" id=18]
-atlas = ExtResource( 7 )
-region = Rect2( 0, 0, 96, 64 )
-
-[sub_resource type="AtlasTexture" id=19]
-atlas = ExtResource( 7 )
-region = Rect2( 96, 0, 96, 64 )
-
-[sub_resource type="AtlasTexture" id=20]
-atlas = ExtResource( 7 )
-region = Rect2( 192, 0, 96, 64 )
-
-[sub_resource type="AtlasTexture" id=21]
-atlas = ExtResource( 7 )
-region = Rect2( 288, 0, 96, 64 )
-
 [sub_resource type="AtlasTexture" id=5]
 atlas = ExtResource( 5 )
 region = Rect2( 0, 0, 96, 64 )
@@ -76,6 +60,22 @@ region = Rect2( 192, 0, 96, 64 )
 
 [sub_resource type="AtlasTexture" id=14]
 atlas = ExtResource( 9 )
+region = Rect2( 288, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=18]
+atlas = ExtResource( 7 )
+region = Rect2( 0, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=19]
+atlas = ExtResource( 7 )
+region = Rect2( 96, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=20]
+atlas = ExtResource( 7 )
+region = Rect2( 192, 0, 96, 64 )
+
+[sub_resource type="AtlasTexture" id=21]
+atlas = ExtResource( 7 )
 region = Rect2( 288, 0, 96, 64 )
 
 [sub_resource type="AtlasTexture" id=9]
@@ -103,16 +103,6 @@ animations = [ {
 "name": "Attack2",
 "speed": 10.0
 }, {
-"frames": [ SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
-"loop": false,
-"name": "Attack1",
-"speed": 10.0
-}, {
-"frames": [ ExtResource( 6 ) ],
-"loop": true,
-"name": "Fall",
-"speed": 5.0
-}, {
 "frames": [ SubResource( 5 ), SubResource( 6 ) ],
 "loop": true,
 "name": "Run",
@@ -123,9 +113,19 @@ animations = [ {
 "name": "Attack3",
 "speed": 10.0
 }, {
+"frames": [ SubResource( 18 ), SubResource( 19 ), SubResource( 20 ), SubResource( 21 ) ],
+"loop": false,
+"name": "Attack1",
+"speed": 10.0
+}, {
 "frames": [ SubResource( 9 ), SubResource( 10 ) ],
 "loop": true,
 "name": "Wall",
+"speed": 5.0
+}, {
+"frames": [ ExtResource( 6 ) ],
+"loop": true,
+"name": "Fall",
 "speed": 5.0
 } ]
 
@@ -186,7 +186,7 @@ disabled = true
 
 [node name="Camera2D" type="Camera2D" parent="."]
 current = true
-zoom = Vector2( 1.5, 1.5 )
+zoom = Vector2( 2, 2 )
 smoothing_enabled = true
 
 [connection signal="timeout" from="CoyoteJump" to="." method="_on_CoyoteJump_timeout"]
